@@ -1,0 +1,86 @@
+services:
+
+  user-db:
+    image: postgres:17
+    container_name: seatnow-user-db
+    environment:
+      POSTGRES_DB: seatnow_users
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - user-db-data:/var/lib/postgresql/data
+
+  user-service:
+    build:
+      context: ./user-service
+    container_name: seatnow-user-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://user-db:5432/seatnow_users
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - user-db
+
+  event-db:
+    image: postgres:17
+    container_name: seatnow-event-db
+    environment:
+      POSTGRES_DB: seatnow_events
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5434:5432"
+    volumes:
+      - event-db-data:/var/lib/postgresql/data
+
+  event-service:
+    build:
+      context: ./event-service
+    container_name: seatnow-event-service
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://event-db:5432/seatnow_events
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - event-db
+
+  booking-db:
+    image: postgres:17
+    container_name: seatnow-booking-db
+    environment:
+      POSTGRES_DB: seatnow_bookings
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5435:5432"
+    volumes:
+      - booking-db-data:/var/lib/postgresql/data
+
+  booking-service:
+    build:
+      context: ./booking-service
+    container_name: seatnow-booking-service
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://booking-db:5432/seatnow_bookings
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      EVENT_SERVICE_URL: http://event-service:8082
+    depends_on:
+      - booking-db
+      - event-service
+
+volumes:
+  user-db-data:
+  event-db-data:
+  booking-db-data:
