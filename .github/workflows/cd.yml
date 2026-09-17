@@ -1,0 +1,39 @@
+name: SeatNow CD
+
+on:
+  workflow_run:
+    workflows: ["SeatNow CI"]
+    types:
+      - completed
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-images:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout tested commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build user-service image
+        run: |
+          docker build \
+            -t ghcr.io/${{ github.repository_owner }}/seatnow-user-service:latest \
+            ./user-service
+
+      - name: Push user-service image
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/seatnow-user-service:latest
