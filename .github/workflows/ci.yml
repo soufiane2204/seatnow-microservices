@@ -11,6 +11,29 @@ jobs:
   user-service-build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:17
+
+        env:
+          POSTGRES_DB: seatnow_users
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpassword
+
+        ports:
+          - 5432:5432
+
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DB_USERNAME: testuser
+      DB_PASSWORD: testpassword
+      JWT_SECRET: ci-only-jwt-secret-that-is-long-enough-for-testing-seatnow-123456789
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
