@@ -28,16 +28,16 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Package user-service
-        working-directory: ./user-service
-        run: ./mvnw clean package -DskipTests
-
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Package user-service
+        working-directory: ./user-service
+        run: ./mvnw clean package -DskipTests
 
       - name: Build user-service image
         run: |
@@ -48,3 +48,31 @@ jobs:
       - name: Push user-service image
         run: |
           docker push ghcr.io/${{ github.repository_owner }}/seatnow-user-service:latest
+
+      - name: Package event-service
+        working-directory: ./event-service
+        run: ./mvnw clean package -DskipTests
+
+      - name: Build event-service image
+        run: |
+          docker build \
+            -t ghcr.io/${{ github.repository_owner }}/seatnow-event-service:latest \
+            ./event-service
+
+      - name: Push event-service image
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/seatnow-event-service:latest
+
+      - name: Package booking-service
+        working-directory: ./booking-service
+        run: ./mvnw clean package -DskipTests
+
+      - name: Build booking-service image
+        run: |
+          docker build \
+            -t ghcr.io/${{ github.repository_owner }}/seatnow-booking-service:latest \
+            ./booking-service
+
+      - name: Push booking-service image
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/seatnow-booking-service:latest
