@@ -13,3 +13,4 @@ Thumbs.db
 *.log
 
 k8s/user/user-secret.yaml
+k8s/event/event-secret.yaml

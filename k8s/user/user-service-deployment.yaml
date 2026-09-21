@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: apps/v1
 kind: Deployment
 
 metadata:
@@ -11,6 +11,11 @@ spec:
     matchLabels:
       app: user-service
 
+  template:
+    metadata:
+      labels:
+        app: user-service
+
     spec:
       containers:
         - name: user-service
@@ -22,5 +27,6 @@ spec:
           envFrom:
             - configMapRef:
                 name: user-config
+
             - secretRef:
                 name: user-secret

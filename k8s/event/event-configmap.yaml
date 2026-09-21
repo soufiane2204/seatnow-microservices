@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: event-config
+
+data:
+  DB_URL: "jdbc:postgresql://event-db:5432/seatnow_events"
+  DB_USERNAME: "postgres"
