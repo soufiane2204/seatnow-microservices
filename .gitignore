@@ -14,3 +14,4 @@ Thumbs.db
 
 k8s/user/user-secret.yaml
 k8s/event/event-secret.yaml
+k8s/booking/booking-secret.yaml

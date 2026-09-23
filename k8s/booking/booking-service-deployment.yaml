@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: booking-service
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: booking-service
+
+  template:
+    metadata:
+      labels:
+        app: booking-service
+
+    spec:
+      containers:
+        - name: booking-service
+          image: ghcr.io/soufiane2204/seatnow-booking-service:latest
+
+          ports:
+            - containerPort: 8083
+
+          envFrom:
+            - configMapRef:
+                name: booking-config
+
+            - secretRef:
+                name: booking-secret
