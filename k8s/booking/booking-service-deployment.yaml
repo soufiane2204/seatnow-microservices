@@ -30,3 +30,19 @@ spec:
 
             - secretRef:
                 name: booking-secret
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8082
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8082
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 3

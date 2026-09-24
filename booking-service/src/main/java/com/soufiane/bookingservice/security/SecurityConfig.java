@@ -39,10 +39,12 @@ public class SecurityConfig {
                                 "/api/bookings"
                         ).hasRole("ADMIN")
 
+
                         // Logged-in users
                         .requestMatchers(
                                 "/api/bookings/**"
                         ).authenticated()
+                        .requestMatchers("/actuator/health/**").permitAll()
 
                         .anyRequest().authenticated()
                 )
