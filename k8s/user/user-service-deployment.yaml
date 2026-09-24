@@ -1,6 +1,5 @@
 apiVersion: apps/v1
 kind: Deployment
-
 metadata:
   name: user-service
 
@@ -27,6 +26,21 @@ spec:
           envFrom:
             - configMapRef:
                 name: user-config
-
             - secretRef:
                 name: user-secret
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8081
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8081
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 3

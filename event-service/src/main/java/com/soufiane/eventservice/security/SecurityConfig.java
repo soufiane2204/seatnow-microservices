@@ -29,18 +29,18 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // Public GET endpoints
-                        .requestMatchers(HttpMethod.GET, "/api/events/**").permitAll()
 
-                        // Booking-related endpoints:
-                        // USER or ADMIN can reserve/release
+                        .requestMatchers(HttpMethod.GET, "/api/events/**").permitAll()
+                        .requestMatchers("/actuator/health/**").permitAll()
+
+
                         .requestMatchers(
                                 HttpMethod.POST,
                                 "/api/events/*/reserve",
                                 "/api/events/*/release"
                         ).authenticated()
 
-                        // Event creation: ADMIN only
+
                         .requestMatchers(HttpMethod.POST, "/api/events/**").hasRole("ADMIN")
 
                         // Event modification: ADMIN only
